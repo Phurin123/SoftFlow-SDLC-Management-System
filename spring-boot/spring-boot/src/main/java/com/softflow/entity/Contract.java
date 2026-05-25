@@ -1,28 +1,39 @@
 package com.softflow.entity;
 
-import com.softflow.entity.base.BaseEntity;
-import com.softflow.entity.enums.ContractStatus;
-import com.softflow.entity.enums.ContractType;
-import com.softflow.entity.enums.RenewalStatus;
+import com.softflow.enums.ContractRenewalStatus;
+import com.softflow.enums.ContractSignStatus;
+import com.softflow.enums.ContractType;
+import com.softflow.enums.PaymentTerms;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Contract Entity - Manages contracts between customer and company.
+ * Linked to Customer and Project.
+ */
 @Entity
 @Table(name = "contracts")
+@SQLDelete(sql = "UPDATE contracts SET is_deleted = true WHERE id = ?")
+@SQLRestriction("is_deleted = false")
 @Data
-@EqualsAndHashCode(callSuper = true, exclude = {"customer", "project", "invoices", "maRenewals"})
-@ToString(exclude = {"customer", "project", "invoices", "maRenewals"})
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class Contract extends BaseEntity {
 
-    @Column(nullable = false, unique = true, length = 50)
+    @Column(name = "contract_no", nullable = false, unique = true, length = 50)
     private String contractNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -34,40 +45,38 @@ public class Contract extends BaseEntity {
     private Project project;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 30)
+    @Column(name = "contract_type", nullable = false, length = 30)
     private ContractType contractType;
 
-    @Column(nullable = false)
+    @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
-    @Column(nullable = false)
+    @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
 
-    @Column(precision = 15, scale = 2)
+    @Column(name = "contract_value", nullable = false, precision = 15, scale = 2)
     private BigDecimal contractValue;
 
-    @Column(length = 500)
-    private String paymentTerms;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_terms", nullable = false, length = 20)
+    private PaymentTerms paymentTerms;
 
-    @Column(length = 1000)
+    @Column(name = "scope_summary", length = 2000)
     private String scopeSummary;
 
-    @Column(length = 500)
-    private String contractFile;
+    @Column(name = "contract_file_url", length = 500)
+    private String contractFileUrl;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private ContractStatus signStatus = ContractStatus.DRAFT;
+    @Column(name = "sign_status", nullable = false, length = 20)
+    @Builder.Default
+    private ContractSignStatus signStatus = ContractSignStatus.DRAFT;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private RenewalStatus renewalStatus = RenewalStatus.NOT_RENEWED;
-
+    @Column(name = "renewal_status", nullable = false, length = 20)
     @Builder.Default
-    @OneToMany(mappedBy = "contract", cascade = CascadeType.ALL)
-    private List<Invoice> invoices = new ArrayList<>();
+    private ContractRenewalStatus renewalStatus = ContractRenewalStatus.NOT_RENEWED;
 
-    @Builder.Default
-    @OneToMany(mappedBy = "contractMa", cascade = CascadeType.ALL)
-    private List<MaRenewal> maRenewals = new ArrayList<>();
+    @Column(name = "remark", length = 1000)
+    private String remark;
 }

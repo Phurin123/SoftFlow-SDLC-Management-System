@@ -1,38 +1,40 @@
 package com.softflow.entity;
 
-import com.softflow.entity.base.BaseEntity;
-import com.softflow.entity.enums.ProjectPriority;
-import com.softflow.entity.enums.SdlcStatus;
+import com.softflow.enums.ProjectPriority;
+import com.softflow.enums.SdlcStatus;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Project Entity - Core entity of the system.
+ * Everything links to Project. Manages SDLC lifecycle status.
+ */
 @Entity
 @Table(name = "projects")
+@SQLDelete(sql = "UPDATE projects SET is_deleted = true WHERE id = ?")
+@SQLRestriction("is_deleted = false")
 @Data
-@EqualsAndHashCode(callSuper = true, exclude = {
-    "customer", "contract", "projectManager", "ba", "sa",
-    "phases", "requirements", "contracts", "erDiagrams",
-    "specifications", "tasks", "testPlans", "deliveries", "maTickets"
-})
-@ToString(exclude = {
-    "customer", "contract", "projectManager", "ba", "sa",
-    "phases", "requirements", "contracts", "erDiagrams",
-    "specifications", "tasks", "testPlans", "deliveries", "maTickets"
-})
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class Project extends BaseEntity {
 
-    @Column(nullable = false, unique = true, length = 50)
+    @Column(name = "project_code", nullable = false, unique = true, length = 50)
     private String projectCode;
 
-    @Column(nullable = false, length = 200)
+    @Column(name = "project_name", nullable = false, length = 200)
     private String projectName;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -43,74 +45,55 @@ public class Project extends BaseEntity {
     @JoinColumn(name = "contract_id")
     private Contract contract;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pm_id")
-    private User projectManager;
+    @Column(name = "project_manager", length = 100)
+    private String projectManager;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ba_id")
-    private User ba;
+    @Column(name = "business_analyst", length = 100)
+    private String businessAnalyst;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sa_id")
-    private User sa;
+    @Column(name = "system_analyst", length = 100)
+    private String systemAnalyst;
 
-    @Column(nullable = false)
+    @Column(name = "start_date")
     private LocalDate startDate;
 
-    @Column
+    @Column(name = "planned_end_date")
     private LocalDate plannedEndDate;
 
-    @Column
+    @Column(name = "actual_end_date")
     private LocalDate actualEndDate;
 
-    @Column(precision = 10, scale = 2)
+    @Column(name = "budget_manday", precision = 10, scale = 2)
     private BigDecimal budgetManday;
 
-    @Column(precision = 10, scale = 2)
-    private BigDecimal usedManday;
+    @Column(name = "used_manday", precision = 10, scale = 2)
+    @Builder.Default
+    private BigDecimal usedManday = BigDecimal.ZERO;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 30)
-    private SdlcStatus projectStatus = SdlcStatus.PROSPECT;
+    @Column(name = "sdlc_status", nullable = false, length = 30)
+    @Builder.Default
+    private SdlcStatus sdlcStatus = SdlcStatus.PROSPECT;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Column(name = "priority", nullable = false, length = 10)
+    @Builder.Default
     private ProjectPriority priority = ProjectPriority.MEDIUM;
 
+    @Column(name = "progress_percentage")
     @Builder.Default
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Integer progressPercentage = 0;
+
+    @Column(name = "description", length = 2000)
+    private String description;
+
+    // Relationships
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
+    @OrderBy("sequence")
     private List<ProjectPhase> phases = new ArrayList<>();
 
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private List<Requirement> requirements = new ArrayList<>();
-
-    @Builder.Default
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    private List<Contract> contracts = new ArrayList<>();
-
-    @Builder.Default
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    private List<ErDiagram> erDiagrams = new ArrayList<>();
-
-    @Builder.Default
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    private List<Specification> specifications = new ArrayList<>();
-
-    @Builder.Default
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    private List<Task> tasks = new ArrayList<>();
-
-    @Builder.Default
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    private List<TestPlan> testPlans = new ArrayList<>();
-
-    @Builder.Default
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    private List<Delivery> deliveries = new ArrayList<>();
-
-    @Builder.Default
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    private List<MaTicket> maTickets = new ArrayList<>();
 }

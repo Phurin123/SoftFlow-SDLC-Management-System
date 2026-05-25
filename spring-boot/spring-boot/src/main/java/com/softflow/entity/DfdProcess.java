@@ -1,62 +1,73 @@
 package com.softflow.entity;
 
-import com.softflow.entity.base.BaseEntity;
+import com.softflow.enums.DfdStatus;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * DFD Process Entity - Represents a process in Data Flow Diagram.
+ * Linked to Project and Requirements.
+ */
 @Entity
 @Table(name = "dfd_processes")
+@SQLDelete(sql = "UPDATE dfd_processes SET is_deleted = true WHERE id = ?")
+@SQLRestriction("is_deleted = false")
 @Data
-@EqualsAndHashCode(callSuper = true, exclude = {"dfd", "owner", "requirements", "dataFlowsIn", "dataFlowsOut"})
-@ToString(exclude = {"dfd", "owner", "requirements", "dataFlowsIn", "dataFlowsOut"})
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class DfdProcess extends BaseEntity {
 
-    @Column(nullable = false, length = 50)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id", nullable = false)
+    private Project project;
+
+    @Column(name = "process_code", nullable = false, length = 50)
     private String processCode;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "process_name", nullable = false, length = 200)
     private String processName;
 
-    @Column(length = 4000)
+    @Column(name = "description", length = 2000)
     private String description;
 
-    @Column(length = 500)
+    @Column(name = "input_data", length = 1000)
     private String inputData;
 
-    @Column(length = 500)
+    @Column(name = "output_data", length = 1000)
     private String outputData;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dfd_id", nullable = false)
-    private Dfd dfd;
+    @Column(name = "related_data_store", length = 500)
+    private String relatedDataStore;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id")
-    private User owner;
+    @Column(name = "owner", length = 100)
+    private String owner;
 
-    @Column(length = 20)
-    private String status = "DRAFT";
-
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, length = 20)
     @Builder.Default
-    @ManyToMany
+    private DfdStatus status = DfdStatus.DRAFT;
+
+    @Column(name = "dfd_level", length = 20)
+    private String dfdLevel;
+
+    // Many-to-Many with Requirements
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "dfd_process_requirements",
         joinColumns = @JoinColumn(name = "dfd_process_id"),
         inverseJoinColumns = @JoinColumn(name = "requirement_id")
     )
-    private List<Requirement> requirements = new ArrayList<>();
-
     @Builder.Default
-    @OneToMany(mappedBy = "sourceProcess", cascade = CascadeType.ALL)
-    private List<DfdDataFlow> dataFlowsOut = new ArrayList<>();
-
-    @Builder.Default
-    @OneToMany(mappedBy = "targetProcess", cascade = CascadeType.ALL)
-    private List<DfdDataFlow> dataFlowsIn = new ArrayList<>();
+    private List<Requirement> relatedRequirements = new ArrayList<>();
 }
