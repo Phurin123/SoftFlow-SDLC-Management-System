@@ -1,0 +1,138 @@
+<div class="space-y-6 animate-fade-in">
+  <!-- Header -->
+  <div class="page-header">
+    <h1 class="page-title">Dashboard</h1>
+    <p class="page-subtitle">Overview of your software development lifecycle</p>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    @for (stat of stats(); track stat.title) {
+      <a [routerLink]="stat.link" class="card hover:shadow-md transition-shadow duration-200 group">
+        <div class="p-5">
+          <div class="flex items-start justify-between">
+            <div class="p-2 rounded-lg" [class]="stat.iconBg">
+              <lucide-icon [name]="stat.icon" [class]="stat.iconColor" class="w-5 h-5"></lucide-icon>
+            </div>
+            <lucide-icon name="arrow-up-right" class="w-4 h-4 text-gray-400 group-hover:text-primary-500 transition-colors"></lucide-icon>
+          </div>
+          <div class="mt-4">
+            <h3 class="text-2xl font-bold text-gray-900">{{ stat.value }}</h3>
+            <p class="text-sm text-gray-500 mt-0.5">{{ stat.title }}</p>
+            <p class="text-xs mt-1.5 font-medium" 
+               [class.text-green-600]="stat.changeType === 'positive'"
+               [class.text-red-600]="stat.changeType === 'negative'"
+               [class.text-gray-500]="stat.changeType === 'neutral'">
+              {{ stat.change }}
+            </p>
+          </div>
+        </div>
+      </a>
+    }
+  </div>
+
+  <!-- SDLC Flow Visualization -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <h2 class="text-lg font-semibold text-gray-900">SDLC Pipeline</h2>
+        <p class="text-sm text-gray-500 mt-0.5">Current status across all projects</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="flex flex-wrap items-center gap-2">
+        @for (stage of sdlcFlow(); track stage.name; let i = $index) {
+          <div class="flex items-center gap-2">
+            <div class="flex flex-col items-center">
+              <div 
+                class="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold transition-all"
+                [class]="stage.color"
+                [class.ring-4]="stage.status === 'active'"
+                [class.ring-offset-2]="stage.status === 'active'"
+                [class.ring-gray-200]="stage.status === 'active'">
+                {{ stage.count }}
+              </div>
+              <span class="text-xs text-gray-600 mt-1 font-medium">{{ stage.name }}</span>
+            </div>
+            @if (i < sdlcFlow().length - 1) {
+              <div class="w-6 h-0.5 bg-gray-200 mb-5"></div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Recent Activity -->
+    <div class="lg:col-span-2 card">
+      <div class="card-header">
+        <div>
+          <h2 class="text-lg font-semibold text-gray-900">Recent Activity</h2>
+          <p class="text-sm text-gray-500 mt-0.5">Latest updates across all projects</p>
+        </div>
+      </div>
+      <div class="divide-y divide-gray-100">
+        @for (activity of recentActivity(); track $index) {
+          <div class="px-6 py-4 flex items-start gap-3 hover:bg-gray-50 transition-colors">
+            <div class="p-2 rounded-lg flex-shrink-0" [class]="activity.bg">
+              <lucide-icon [name]="activity.icon" [class]="activity.color" class="w-4 h-4"></lucide-icon>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm text-gray-900">{{ activity.message }}</p>
+              <p class="text-xs text-gray-500 mt-0.5">{{ activity.time }}</p>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h2 class="text-lg font-semibold text-gray-900">Quick Actions</h2>
+          <p class="text-sm text-gray-500 mt-0.5">Common tasks</p>
+        </div>
+      </div>
+      <div class="p-4 space-y-2">
+        <a routerLink="/customers" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors group">
+          <div class="p-2 bg-blue-100 rounded-lg">
+            <lucide-icon name="users" class="w-4 h-4 text-blue-600"></lucide-icon>
+          </div>
+          <div>
+            <p class="text-sm font-medium text-gray-900 group-hover:text-primary-600">New Customer</p>
+            <p class="text-xs text-gray-500">Add a new client</p>
+          </div>
+        </a>
+        <a routerLink="/projects" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors group">
+          <div class="p-2 bg-indigo-100 rounded-lg">
+            <lucide-icon name="folder-kanban" class="w-4 h-4 text-indigo-600"></lucide-icon>
+          </div>
+          <div>
+            <p class="text-sm font-medium text-gray-900 group-hover:text-primary-600">New Project</p>
+            <p class="text-xs text-gray-500">Start a new project</p>
+          </div>
+        </a>
+        <a routerLink="/approval-center" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors group">
+          <div class="p-2 bg-amber-100 rounded-lg">
+            <lucide-icon name="file-check" class="w-4 h-4 text-amber-600"></lucide-icon>
+          </div>
+          <div>
+            <p class="text-sm font-medium text-gray-900 group-hover:text-primary-600">Review Approvals</p>
+            <p class="text-xs text-gray-500">3 items pending</p>
+          </div>
+        </a>
+        <a routerLink="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors group">
+          <div class="p-2 bg-green-100 rounded-lg">
+            <lucide-icon name="clipboard-check" class="w-4 h-4 text-green-600"></lucide-icon>
+          </div>
+          <div>
+            <p class="text-sm font-medium text-gray-900 group-hover:text-primary-600">New Requirement</p>
+            <p class="text-xs text-gray-500">Capture requirements</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
