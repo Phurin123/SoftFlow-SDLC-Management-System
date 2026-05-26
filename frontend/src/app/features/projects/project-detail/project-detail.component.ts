@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, ActivatedRoute } from '@angular/router';
+import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { LucideAngularModule, 
   ArrowLeft, FolderKanban, Users, Calendar, 
   BarChart3, Clock, Target, ClipboardCheck, 
@@ -57,5 +57,15 @@ export class ProjectDetailComponent {
     { label: 'Days Left', value: '120', icon: Clock },
   ]);
 
-  constructor(private route: ActivatedRoute) {}
+   isActive(route: string): boolean {
+    const currentUrl = this.router.url;
+    const projectId = this.route.snapshot.paramMap.get('id');
+    
+    if (route === 'overview') {
+      return currentUrl === `/projects/${projectId}`;
+    }
+    return currentUrl.includes(`/projects/${projectId}/${route}`);
+  }
+
+  constructor(private route: ActivatedRoute, private router: Router) {}
 }
