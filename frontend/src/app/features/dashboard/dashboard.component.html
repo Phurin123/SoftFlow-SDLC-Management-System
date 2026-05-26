@@ -1,8 +1,16 @@
 <div class="space-y-6 animate-fade-in">
   <!-- Header -->
-  <div class="page-header">
-    <h1 class="page-title">Dashboard</h1>
-    <p class="page-subtitle">Overview of your software development lifecycle</p>
+  <div class="page-header rounded-3xl bg-gradient-to-r from-sky-600 via-blue-600 to-indigo-600 p-6 text-white shadow-xl shadow-sky-500/20">
+    <div class="flex flex-col gap-3">
+      <span class="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs uppercase tracking-[0.3em] text-sky-100 font-semibold">
+        <span class="w-2 h-2 rounded-full bg-white"></span>
+        Live Dashboard
+      </span>
+      <div>
+        <h1 class="page-title text-3xl font-semibold">Dashboard</h1>
+        <p class="page-subtitle text-sm text-sky-100/90">Overview of your software development lifecycle</p>
+      </div>
+    </div>
   </div>
 
   <!-- Stats Grid -->
@@ -14,7 +22,7 @@
             <div class="p-2 rounded-lg" [class]="stat.iconBg">
               <lucide-icon [name]="stat.icon" [class]="stat.iconColor" class="w-5 h-5"></lucide-icon>
             </div>
-            <lucide-icon name="arrow-up-right" class="w-4 h-4 text-gray-400 group-hover:text-primary-500 transition-colors"></lucide-icon>
+            <lucide-icon [name]="ArrowUpRight" class="w-4 h-4 text-gray-400 group-hover:text-white transition-colors"></lucide-icon>
           </div>
           <div class="mt-4">
             <h3 class="text-2xl font-bold text-gray-900">{{ stat.value }}</h3>
@@ -98,7 +106,7 @@
       <div class="p-4 space-y-2">
         <a routerLink="/customers" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors group">
           <div class="p-2 bg-blue-100 rounded-lg">
-            <lucide-icon name="users" class="w-4 h-4 text-blue-600"></lucide-icon>
+              <lucide-icon [name]="Users" class="w-4 h-4 text-blue-600"></lucide-icon>
           </div>
           <div>
             <p class="text-sm font-medium text-gray-900 group-hover:text-primary-600">New Customer</p>
@@ -107,7 +115,7 @@
         </a>
         <a routerLink="/projects" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors group">
           <div class="p-2 bg-indigo-100 rounded-lg">
-            <lucide-icon name="folder-kanban" class="w-4 h-4 text-indigo-600"></lucide-icon>
+            <lucide-icon [name]="FolderKanban" class="w-4 h-4 text-indigo-600"></lucide-icon>
           </div>
           <div>
             <p class="text-sm font-medium text-gray-900 group-hover:text-primary-600">New Project</p>
@@ -116,7 +124,7 @@
         </a>
         <a routerLink="/approval-center" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors group">
           <div class="p-2 bg-amber-100 rounded-lg">
-            <lucide-icon name="file-check" class="w-4 h-4 text-amber-600"></lucide-icon>
+            <lucide-icon [name]="FileCheck" class="w-4 h-4 text-amber-600"></lucide-icon>
           </div>
           <div>
             <p class="text-sm font-medium text-gray-900 group-hover:text-primary-600">Review Approvals</p>
@@ -125,7 +133,7 @@
         </a>
         <a routerLink="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors group">
           <div class="p-2 bg-green-100 rounded-lg">
-            <lucide-icon name="clipboard-check" class="w-4 h-4 text-green-600"></lucide-icon>
+            <lucide-icon [name]="ClipboardCheck" class="w-4 h-4 text-green-600"></lucide-icon>
           </div>
           <div>
             <p class="text-sm font-medium text-gray-900 group-hover:text-primary-600">New Requirement</p>

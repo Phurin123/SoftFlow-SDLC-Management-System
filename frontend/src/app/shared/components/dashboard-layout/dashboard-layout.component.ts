@@ -2,13 +2,38 @@ import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
-import { LucideAngularModule, 
-  LayoutDashboard, Users, FolderKanban, FileCheck, 
-  Settings, Bell, Search, Menu, X, ChevronDown, 
-  ChevronRight, LogOut, User, HelpCircle, Shield,
-  GitBranch, BookOpen, TestTube, Bug, Truck, 
-  Receipt, Wrench, ClipboardCheck, BarChart3,
-  Workflow, Database, FileText, GitCommit, Layers
+import {
+  LucideAngularModule,
+  LayoutDashboard,
+  Users,
+  FolderKanban,
+  FileCheck,
+  Settings,
+  Bell,
+  Search,
+  Menu,
+  X,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  LogOut,
+  User,
+  HelpCircle,
+  Shield,
+  GitBranch,
+  BookOpen,
+  TestTube,
+  Bug,
+  Truck,
+  Receipt,
+  Wrench,
+  ClipboardCheck,
+  BarChart3,
+  Workflow,
+  Database,
+  FileText,
+  GitCommit,
+  Layers,
 } from 'lucide-angular';
 
 interface MenuItem {
@@ -23,7 +48,7 @@ interface MenuItem {
   selector: 'app-dashboard-layout',
   standalone: true,
   imports: [CommonModule, RouterModule, LucideAngularModule],
-  templateUrl: './dashboard-layout.component.html'
+  templateUrl: './dashboard-layout.component.html',
 })
 export class DashboardLayoutComponent {
   readonly LayoutDashboard = LayoutDashboard;
@@ -35,11 +60,13 @@ export class DashboardLayoutComponent {
   readonly Menu = Menu;
   readonly X = X;
   readonly ChevronDown = ChevronDown;
+  readonly ChevronLeft = ChevronLeft;
   readonly ChevronRight = ChevronRight;
   readonly LogOut = LogOut;
   readonly User = User;
   readonly Settings = Settings;
   readonly HelpCircle = HelpCircle;
+  readonly Layers = Layers;
 
   sidebarCollapsed = signal(false);
   mobileSidebarOpen = signal(false);
@@ -61,7 +88,7 @@ export class DashboardLayoutComponent {
         { label: 'DFD Designer', icon: Workflow, route: '/projects/dfd' },
         { label: 'ER Diagram', icon: Database, route: '/projects/er-diagram' },
         { label: 'Specifications', icon: FileText, route: '/projects/specifications' },
-      ]
+      ],
     },
     { label: 'Approval Center', icon: FileCheck, route: '/approval-center', badge: 3 },
   ];
@@ -84,22 +111,22 @@ export class DashboardLayoutComponent {
 
   constructor(private router: Router) {
     this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
+      .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: any) => {
         this.currentRoute.set(event.urlAfterRedirects);
       });
   }
 
   toggleSidebar() {
-    this.sidebarCollapsed.update(v => !v);
+    this.sidebarCollapsed.update((v) => !v);
   }
 
   toggleMobileSidebar() {
-    this.mobileSidebarOpen.update(v => !v);
+    this.mobileSidebarOpen.update((v) => !v);
   }
 
   toggleMenu(label: string) {
-    this.expandedMenus.update(set => {
+    this.expandedMenus.update((set) => {
       const newSet = new Set(set);
       if (newSet.has(label)) {
         newSet.delete(label);
@@ -120,7 +147,7 @@ export class DashboardLayoutComponent {
   }
 
   toggleUserMenu() {
-    this.userMenuOpen.update(v => !v);
+    this.userMenuOpen.update((v) => !v);
   }
 
   logout() {
