@@ -2,7 +2,10 @@ import { Component, signal, viewChild, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { LucideAngularModule, Plus } from 'lucide-angular';
-import { DataTableComponent, Column } from '../../../shared/components/data-table/data-table.component';
+import {
+  DataTableComponent,
+  Column,
+} from '../../../core/components/data-table/data-table.component';
 
 @Component({
   selector: 'app-spec-list',
@@ -32,11 +35,15 @@ import { DataTableComponent, Column } from '../../../shared/components/data-tabl
       <!-- Gate Info Cards -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
-          <lucide-icon name="alert-triangle" class="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5"></lucide-icon>
+          <lucide-icon
+            name="alert-triangle"
+            class="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5"
+          ></lucide-icon>
           <div>
             <h3 class="text-sm font-semibold text-amber-800">Requirement Gate</h3>
             <p class="text-xs text-amber-700 mt-1">
-              Specifications can only be linked to requirements that are fully approved (BA + Customer).
+              Specifications can only be linked to requirements that are fully approved (BA +
+              Customer).
             </p>
           </div>
         </div>
@@ -45,7 +52,8 @@ import { DataTableComponent, Column } from '../../../shared/components/data-tabl
           <div>
             <h3 class="text-sm font-semibold text-blue-800">Task Creation Gate</h3>
             <p class="text-xs text-blue-700 mt-1">
-              Development tasks can only be created from specifications that are approved by both Head and Customer.
+              Development tasks can only be created from specifications that are approved by both
+              Head and Customer.
             </p>
           </div>
         </div>
@@ -97,10 +105,11 @@ import { DataTableComponent, Column } from '../../../shared/components/data-tabl
         title="Specifications"
         subtitle="All specifications for this project"
         (view)="onView($event)"
-        (edit)="onEdit($event)">
+        (edit)="onEdit($event)"
+      >
       </app-data-table>
     </div>
-  `
+  `,
 })
 export class SpecListComponent implements OnInit {
   readonly Plus = Plus;
@@ -108,19 +117,69 @@ export class SpecListComponent implements OnInit {
     { key: 'specCode', label: 'Spec Code', sortable: true },
     { key: 'screenName', label: 'Screen Name', sortable: true },
     { key: 'specType', label: 'Type', sortable: true, type: 'badge' },
-    { key: 'estimatedManday', label: 'Manday', sortable: true, format: (v: number) => v ? v + 'd' : '—' },
+    {
+      key: 'estimatedManday',
+      label: 'Manday',
+      sortable: true,
+      format: (v: number) => (v ? v + 'd' : '—'),
+    },
     { key: 'headConfirmStatus', label: 'Head', sortable: true, type: 'badge' },
     { key: 'customerConfirmStatus', label: 'Customer', sortable: true, type: 'badge' },
     { key: 'status', label: 'Status', sortable: true, type: 'badge' },
-    { key: 'actions', label: 'Actions', type: 'actions' }
+    { key: 'actions', label: 'Actions', type: 'actions' },
   ];
 
   specs = signal([
-    { id: '1', specCode: 'SPEC-001', screenName: 'Login Page', specType: 'UI', estimatedManday: 3, headConfirmStatus: 'CONFIRMED', customerConfirmStatus: 'CONFIRMED', status: 'CUSTOMER_APPROVED' },
-    { id: '2', specCode: 'SPEC-002', screenName: 'User Management API', specType: 'API', estimatedManday: 5, headConfirmStatus: 'CONFIRMED', customerConfirmStatus: 'PENDING', status: 'IN_REVIEW' },
-    { id: '3', specCode: 'SPEC-003', screenName: 'Dashboard Screen', specType: 'UI', estimatedManday: 8, headConfirmStatus: 'PENDING', customerConfirmStatus: 'PENDING', status: 'DRAFT' },
-    { id: '4', specCode: 'SPEC-004', screenName: 'Role Permission', specType: 'PERMISSION', estimatedManday: 4, headConfirmStatus: 'CONFIRMED', customerConfirmStatus: 'CONFIRMED', status: 'CUSTOMER_APPROVED' },
-    { id: '5', specCode: 'SPEC-005', screenName: 'Sales Report', specType: 'REPORT', estimatedManday: 6, headConfirmStatus: 'REJECTED', customerConfirmStatus: 'PENDING', status: 'REJECTED' },
+    {
+      id: '1',
+      specCode: 'SPEC-001',
+      screenName: 'Login Page',
+      specType: 'UI',
+      estimatedManday: 3,
+      headConfirmStatus: 'CONFIRMED',
+      customerConfirmStatus: 'CONFIRMED',
+      status: 'CUSTOMER_APPROVED',
+    },
+    {
+      id: '2',
+      specCode: 'SPEC-002',
+      screenName: 'User Management API',
+      specType: 'API',
+      estimatedManday: 5,
+      headConfirmStatus: 'CONFIRMED',
+      customerConfirmStatus: 'PENDING',
+      status: 'IN_REVIEW',
+    },
+    {
+      id: '3',
+      specCode: 'SPEC-003',
+      screenName: 'Dashboard Screen',
+      specType: 'UI',
+      estimatedManday: 8,
+      headConfirmStatus: 'PENDING',
+      customerConfirmStatus: 'PENDING',
+      status: 'DRAFT',
+    },
+    {
+      id: '4',
+      specCode: 'SPEC-004',
+      screenName: 'Role Permission',
+      specType: 'PERMISSION',
+      estimatedManday: 4,
+      headConfirmStatus: 'CONFIRMED',
+      customerConfirmStatus: 'CONFIRMED',
+      status: 'CUSTOMER_APPROVED',
+    },
+    {
+      id: '5',
+      specCode: 'SPEC-005',
+      screenName: 'Sales Report',
+      specType: 'REPORT',
+      estimatedManday: 6,
+      headConfirmStatus: 'REJECTED',
+      customerConfirmStatus: 'PENDING',
+      status: 'REJECTED',
+    },
   ]);
 
   table = viewChild<DataTableComponent>('specTable');
@@ -129,6 +188,10 @@ export class SpecListComponent implements OnInit {
     setTimeout(() => this.table()?.setData(this.specs()));
   }
 
-  onView(r: any) { console.log('View', r); }
-  onEdit(r: any) { console.log('Edit', r); }
+  onView(r: any) {
+    console.log('View', r);
+  }
+  onEdit(r: any) {
+    console.log('Edit', r);
+  }
 }

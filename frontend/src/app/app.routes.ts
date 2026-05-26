@@ -1,22 +1,28 @@
 import { Routes } from '@angular/router';
-import { DashboardLayoutComponent } from './shared/components/dashboard-layout/dashboard-layout.component';
+import { DashboardLayoutComponent } from './core/components/dashboard-layout/dashboard-layout.component';
+import { authGuard } from './core/guards/auth.guard';
+import { LoginComponent } from './core/components/login/login.component';
 
 export const routes: Routes = [
+  // ✅ เส้นทาง Login อยู่นอก Layout (ไม่มี Sidebar)
+  { path: 'login', component: LoginComponent },
+
+  // ✅ ทุกเส้นทางที่ต้องใช้ Layout + ต้อง Login
   {
     path: '',
     component: DashboardLayoutComponent,
+    canActivate: [authGuard], // ทุก child ต้อง login
     children: [
-      {
-        path: '',
-        redirectTo: 'dashboard',
-        pathMatch: 'full',
-      },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+
+      // ✅ Dashboard ควรโหลด Component จริง (ไม่ใช่ Layout ซ้ำ)
       {
         path: 'dashboard',
         loadComponent: () =>
           import('./features/dashboard/dashboard.component').then((m) => m.DashboardComponent),
         title: 'Dashboard - SoftFlow',
       },
+
       {
         path: 'customers',
         loadComponent: () =>
@@ -25,6 +31,7 @@ export const routes: Routes = [
           ),
         title: 'Customers - SoftFlow',
       },
+
       {
         path: 'projects',
         loadComponent: () =>
@@ -33,6 +40,7 @@ export const routes: Routes = [
           ),
         title: 'Projects - SoftFlow',
       },
+
       {
         path: 'projects/:id',
         loadComponent: () =>
@@ -41,6 +49,7 @@ export const routes: Routes = [
           ),
         title: 'Project Detail - SoftFlow',
       },
+
       {
         path: 'projects/:id/timeline',
         loadComponent: () =>
@@ -49,6 +58,7 @@ export const routes: Routes = [
           ),
         title: 'Project Timeline - SoftFlow',
       },
+
       {
         path: 'projects/:id/requirements',
         loadComponent: () =>
@@ -57,6 +67,7 @@ export const routes: Routes = [
           ),
         title: 'Requirements - SoftFlow',
       },
+
       {
         path: 'projects/:id/dfd',
         loadComponent: () =>
@@ -65,12 +76,14 @@ export const routes: Routes = [
           ),
         title: 'DFD Designer - SoftFlow',
       },
+
       {
         path: 'projects/:id/er-diagram',
         loadComponent: () =>
           import('./features/er-designer/er-list/er-list.component').then((m) => m.ErListComponent),
         title: 'ER Diagram - SoftFlow',
       },
+
       {
         path: 'projects/:id/specifications',
         loadComponent: () =>
@@ -79,6 +92,7 @@ export const routes: Routes = [
           ),
         title: 'Specifications - SoftFlow',
       },
+
       {
         path: 'approval-center',
         loadComponent: () =>
@@ -89,8 +103,7 @@ export const routes: Routes = [
       },
     ],
   },
-  {
-    path: '**',
-    redirectTo: 'dashboard',
-  },
+
+  // Redirect unknown paths to dashboard
+  { path: '**', redirectTo: 'dashboard' },
 ];

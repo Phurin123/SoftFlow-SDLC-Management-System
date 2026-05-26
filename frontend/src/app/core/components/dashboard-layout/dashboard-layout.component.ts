@@ -1,40 +1,15 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { LucideAngularModule } from 'lucide-angular';
 import {
-  LucideAngularModule,
-  LayoutDashboard,
-  Users,
-  FolderKanban,
-  FileCheck,
-  Settings,
-  Bell,
-  Search,
-  Menu,
-  X,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  LogOut,
-  User,
-  HelpCircle,
-  Shield,
-  GitBranch,
-  BookOpen,
-  TestTube,
-  Bug,
-  Truck,
-  Receipt,
-  Wrench,
-  ClipboardCheck,
-  BarChart3,
-  Workflow,
-  Database,
-  FileText,
-  GitCommit,
-  Layers,
+  LayoutDashboard, Users, FolderKanban, FileCheck, Settings, Bell, Search,
+  Menu, X, ChevronDown, ChevronLeft, ChevronRight, LogOut, User, HelpCircle,
+  Shield, GitBranch, BookOpen, TestTube, Bug, Truck, Receipt, Wrench,
+  ClipboardCheck, BarChart3, Workflow, Database, FileText, GitCommit, Layers,
 } from 'lucide-angular';
+import { AuthService } from '../../services/auth.service';
 
 interface MenuItem {
   label: string;
@@ -75,6 +50,9 @@ export class DashboardLayoutComponent {
   userMenuOpen = signal(false);
   notificationCount = signal(5);
 
+  // ดึงข้อมูลผู้ใช้จาก AuthService
+  currentUser = computed(() => this.authService['getUser']());
+
   mainMenu: MenuItem[] = [
     { label: 'Dashboard', icon: LayoutDashboard, route: '/dashboard' },
     { label: 'Customers', icon: Users, route: '/customers' },
@@ -109,7 +87,7 @@ export class DashboardLayoutComponent {
     { label: 'Help', icon: HelpCircle, route: '#' },
   ];
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private authService: AuthService) {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: any) => {
@@ -151,6 +129,6 @@ export class DashboardLayoutComponent {
   }
 
   logout() {
-    console.log('Logout clicked');
+    this.authService.logout();
   }
 }

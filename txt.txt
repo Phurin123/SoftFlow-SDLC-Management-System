@@ -1,0 +1,2 @@
+ng g c login --inline-style --skip-tests
+mvn spring-boot:run

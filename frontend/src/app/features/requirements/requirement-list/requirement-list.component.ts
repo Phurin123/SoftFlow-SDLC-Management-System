@@ -2,7 +2,10 @@ import { Component, signal, viewChild, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { LucideAngularModule, Plus } from 'lucide-angular';
-import { DataTableComponent, Column } from '../../../shared/components/data-table/data-table.component';
+import {
+  DataTableComponent,
+  Column,
+} from '../../../core/components/data-table/data-table.component';
 
 @Component({
   selector: 'app-requirement-list',
@@ -59,10 +62,11 @@ import { DataTableComponent, Column } from '../../../shared/components/data-tabl
         title="Requirements"
         subtitle="Track BA and Customer approval status"
         (view)="onView($event)"
-        (edit)="onEdit($event)">
+        (edit)="onEdit($event)"
+      >
       </app-data-table>
     </div>
-  `
+  `,
 })
 export class RequirementListComponent implements OnInit {
   readonly Plus = Plus;
@@ -74,15 +78,60 @@ export class RequirementListComponent implements OnInit {
     { key: 'baConfirmStatus', label: 'BA Status', sortable: true, type: 'badge' },
     { key: 'customerConfirmStatus', label: 'Customer', sortable: true, type: 'badge' },
     { key: 'status', label: 'Status', sortable: true, type: 'badge' },
-    { key: 'actions', label: 'Actions', type: 'actions' }
+    { key: 'actions', label: 'Actions', type: 'actions' },
   ];
 
   requirements = signal([
-    { id: '1', requirementCode: 'REQ-001', title: 'User Login with SSO', requirementType: 'FUNCTIONAL', priority: 'MUST', baConfirmStatus: 'CONFIRMED', customerConfirmStatus: 'CONFIRMED', status: 'APPROVED' },
-    { id: '2', requirementCode: 'REQ-002', title: 'Multi-language Support', requirementType: 'NON_FUNCTIONAL', priority: 'SHOULD', baConfirmStatus: 'CONFIRMED', customerConfirmStatus: 'PENDING', status: 'IN_REVIEW' },
-    { id: '3', requirementCode: 'REQ-003', title: 'Data Export to Excel', requirementType: 'REPORT', priority: 'MUST', baConfirmStatus: 'PENDING', customerConfirmStatus: 'PENDING', status: 'DRAFT' },
-    { id: '4', requirementCode: 'REQ-004', title: 'Role-based Access Control', requirementType: 'SECURITY', priority: 'MUST', baConfirmStatus: 'CONFIRMED', customerConfirmStatus: 'CONFIRMED', status: 'APPROVED' },
-    { id: '5', requirementCode: 'REQ-005', title: 'Dashboard Analytics', requirementType: 'UI', priority: 'COULD', baConfirmStatus: 'CONFIRMED', customerConfirmStatus: 'CONFIRMED', status: 'APPROVED' },
+    {
+      id: '1',
+      requirementCode: 'REQ-001',
+      title: 'User Login with SSO',
+      requirementType: 'FUNCTIONAL',
+      priority: 'MUST',
+      baConfirmStatus: 'CONFIRMED',
+      customerConfirmStatus: 'CONFIRMED',
+      status: 'APPROVED',
+    },
+    {
+      id: '2',
+      requirementCode: 'REQ-002',
+      title: 'Multi-language Support',
+      requirementType: 'NON_FUNCTIONAL',
+      priority: 'SHOULD',
+      baConfirmStatus: 'CONFIRMED',
+      customerConfirmStatus: 'PENDING',
+      status: 'IN_REVIEW',
+    },
+    {
+      id: '3',
+      requirementCode: 'REQ-003',
+      title: 'Data Export to Excel',
+      requirementType: 'REPORT',
+      priority: 'MUST',
+      baConfirmStatus: 'PENDING',
+      customerConfirmStatus: 'PENDING',
+      status: 'DRAFT',
+    },
+    {
+      id: '4',
+      requirementCode: 'REQ-004',
+      title: 'Role-based Access Control',
+      requirementType: 'SECURITY',
+      priority: 'MUST',
+      baConfirmStatus: 'CONFIRMED',
+      customerConfirmStatus: 'CONFIRMED',
+      status: 'APPROVED',
+    },
+    {
+      id: '5',
+      requirementCode: 'REQ-005',
+      title: 'Dashboard Analytics',
+      requirementType: 'UI',
+      priority: 'COULD',
+      baConfirmStatus: 'CONFIRMED',
+      customerConfirmStatus: 'CONFIRMED',
+      status: 'APPROVED',
+    },
   ]);
 
   table = viewChild<DataTableComponent>('reqTable');
@@ -91,6 +140,10 @@ export class RequirementListComponent implements OnInit {
     setTimeout(() => this.table()?.setData(this.requirements()));
   }
 
-  onView(r: any) { console.log('View', r); }
-  onEdit(r: any) { console.log('Edit', r); }
+  onView(r: any) {
+    console.log('View', r);
+  }
+  onEdit(r: any) {
+    console.log('Edit', r);
+  }
 }
